@@ -35,19 +35,24 @@ const addContact = ({ name, number }) => {
       contact.name.toLowerCase().includes(filter.toLowerCase())
     );
   };
+
+  const deleteContact = contactId => {
+      setContacts(contacts.filter(contact => contact.id !== contactId))
+    };
   
-      return (
-     
+  return (     
 <Container>
 <h1>Phonebook</h1>
-<ContactForm onSubmit = {this.addContact}/>
-
+<ContactForm onSubmit = {addContact}/>
 <h2>Contacts</h2>
-<Filter value = {this.state.filter} onChange = {this.changeFilter} />
-<ContactList  
-contacts={visibleContacts}
-onDeleteContact={this.deleteContact}/>
+<Filter value = {filter} onChange = {changeFilter} />
+{contacts.length > 0 ? 
+ ( <ContactList  
+contacts = {visibleContacts()}
+onDeleteContact = {deleteContact}/>) : (
+  <p>There are no contacts</p>
+)}
 </Container>
-      )
-    }
+      );
+    };
 
