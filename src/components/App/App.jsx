@@ -16,42 +16,46 @@ useEffect(() => {
 }, [contacts])
 
 const changeFilter = e => {
-  setFilter(e.currentTarget.value);
+  const {value} = e.target;
+  setFilter(value);
 };
 
-const addContact = ({ name, number }) => {
-  return (contacts.some(el => el.name.toLocaleLowerCase() === name.toLocaleLowerCase())) ? 
-  alert(`${name} is alredy in contacts`) : setContacts(prev => {
-[...prev].push({
-        id: nanoid(),
-        name: name,
-        number: number,
-      });
-    });
+const addContact = (formData) => {
+  const {name} = formData;
+if(contacts.find(el => el.name === name)) {
+  alert(`${name} is alredy in contacts`);
+  return;
+}
+  setContacts([{
+      id: nanoid(),
+      ...formData,
+    },...contacts]);
   };
   
-  const visibleContacts = () => {
-    return contacts.filter((contact) =>
-      contact.name.toLowerCase().includes(filter.toLowerCase())
+  function visibleContacts() {
+    return contacts.filter((contact) => contact.name.toLowerCase().includes(filter.toLowerCase())
     );
-  };
+  }
 
   const deleteContact = contactId => {
       setContacts(contacts.filter(contact => contact.id !== contactId))
     };
   
-  return (     
+  return ( 
+
 <Container>
 <h1>Phonebook</h1>
-<ContactForm onSubmit = {addContact}/>
+<ContactForm addContact = {addContact}/>
 <h2>Contacts</h2>
-<Filter value = {filter} onChange = {changeFilter} />
-{contacts.length > 0 ? 
- ( <ContactList  
-contacts = {visibleContacts()}
-onDeleteContact = {deleteContact}/>) : (
-  <p>There are no contacts</p>
-)}
+
+{contacts.length > 0 ? (
+  <>
+  <Filter value={filter} onChange={changeFilter} />
+  <ContactList
+          contacts={visibleContacts()}
+          onDeleteContact={deleteContact} />
+          </>) :
+          (<p>No contacts yet.</p>)}
 </Container>
       );
     };
